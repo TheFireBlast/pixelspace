@@ -11,10 +11,9 @@ const UserManager = {
      * @param {string} query
      */
     query(query) {
-        //TODO: query user
         if (!query) return null;
         if (query[0] == '#') {
-            let id = query.slice(1);
+            let id = parseInt(query.slice(1));
             // Connection id
             for (var [x, user] of this.users) {
                 for (var c of user.connections) {
@@ -49,6 +48,7 @@ const UserManager = {
     /**
      *
      * @param {import('./Discord').DiscordUser} discordData
+     * @param {import('./Discord').DiscordToken} discordToken
      * @param {string} ip
      */
     create(discordData, discordToken, ip, autoban = true) {
@@ -98,14 +98,14 @@ const UserManager = {
     },
     /**
      * @param {string|import('./User')} user
-     * @param {string} reason
+     * @param {string} [reason]
      */
     ban(user, reason) {
         this.setBan(user, true, reason);
     },
     /**
      * @param {string|import('./User')} user
-     * @param {string} reason
+     * @param {string} [reason]
      */
     unban(user, reason) {
         this.setBan(user, false, reason);

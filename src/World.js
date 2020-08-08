@@ -5,7 +5,6 @@ class World {
     /**
      * @param {string} name
      * @param {number} cooldown
-     * @param {Map<number,Map<number,number>>} chunks
      */
     constructor(name, cooldown) {
         this.name = name;
@@ -127,7 +126,7 @@ class World {
             let pos = player.pos;
             packet.writeUInt16LE(player.id, i);
             packet.writeUInt32LE((((pos.y & 0xffff) << 16) | (pos.x & 0xffff)) >>> 0, i + 1);
-            packet.writeUInt8(((pos.c << 1) & 0xff) | player.connected, i + 5);
+            packet.writeUInt8(((pos.c << 1) & 0xff) | +player.connected, i + 5);
             i += 6;
         });
         conn.emit('ps', packet.toString('base64'));
@@ -168,7 +167,7 @@ class World {
                 var visible = player.connected && (player.user ? !player.user.hidden : true);
                 if (visible) packet.writeUInt32LE((((pos.y & 0xffff) << 16) | (pos.x & 0xffff)) >>> 0, i + 2);
                 else packet.writeUInt32LE(0, i + 2);
-                packet.writeUInt8((pos.c << 1) | visible, i + 6);
+                packet.writeUInt8((pos.c << 1) | +visible, i + 6);
                 i += 7;
             });
             this.playerUp.clear();
@@ -177,7 +176,7 @@ class World {
     }
     /**
      * @param {string} event
-     * @param {any[]} ...args
+     * @param {any[]} args
      */
     emitAll(event, ...args) {
         this.players.forEach((c) => c.emit(event, ...args));

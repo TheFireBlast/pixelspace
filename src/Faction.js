@@ -17,13 +17,14 @@ const Discord = require('./Discord');
     owner: User | string;
     stats?: FactionStats;
     members?: string[];
+    requests?: string[];
 }} FactionInit */
 
 class Faction {
     /**
-     * @param {FactionInit} [init]
+     * @param {FactionInit} init
      */
-    constructor(init = {}) {
+    constructor(init) {
         this.id = (init.id || Date.now()) + '';
         this.name = init.name;
         this.color = init.color;

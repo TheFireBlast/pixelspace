@@ -1,4 +1,5 @@
 /**@type {(url: RequestInfo, init?: RequestInit)=>Promise<Response>} */
+//@ts-ignore
 const fetch = require('node-fetch');
 const FormData = require('form-data');
 const API = 'https://discordapp.com/api/v6/';
@@ -10,20 +11,22 @@ const REDIRECT_URI = {
 
 /**
  * @typedef {{
- *     access_token: string,
- *     expires_in: number,
- *     refresh_token: string,
- *     scope: string,
- *     token_type: string
+ *  access_token: string,
+ *  expires_in: number,
+ *  refresh_token: string,
+ *  scope: string,
+ *  token_type: string,
+ *  error?: string
  * }} DiscordToken
  *
  * @typedef {{
- *      id: string,
- *      username: string,
- *      avatar: string,
- *      discriminator: string,
- *      locale: string,
- *      flags: number
+ *  id: string,
+ *  username: string,
+ *  avatar: string,
+ *  discriminator: string,
+ *  locale: string,
+ *  flags: number,
+ *  error?: string
  * }} DiscordUser
  */
 
@@ -48,6 +51,7 @@ function refreshToken(refreshToken) {
     body.append('refresh_token', refreshToken);
     body.append('redirect_uri', REDIRECT_URI);
     body.append('scope', 'identify');
+    //@ts-ignore
     return fetch(API + 'oauth2/token', { method: 'POST', body }).then((r) => r.json());
 }
 /**
@@ -62,6 +66,7 @@ function getToken(code) {
     body.append('code', code);
     body.append('redirect_uri', REDIRECT_URI);
     body.append('scope', 'identify');
+    //@ts-ignore
     return fetch(API + 'oauth2/token', { method: 'POST', body }).then((r) => r.json());
 }
 /**

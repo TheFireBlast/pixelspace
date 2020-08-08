@@ -45,7 +45,6 @@ class Connection {
      * @param {number} x
      * @param {number} y
      * @param {number} color
-     * @param {boolean} skip
      */
     setPixel(x, y, color) {
         if (!this.user.hidden) this.setPos(x, y, color);

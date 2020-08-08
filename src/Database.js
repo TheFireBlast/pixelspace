@@ -65,13 +65,15 @@ class Database {
         // World
         this.worldSheet = this.db.sheetsById[0];
         await this.worldSheet.loadCells('A1:Z40');
+        //@ts-ignore
         this.world = new World(this.worldSheet.getCell(0, 0).value, this.worldSheet.getCell(0, 1).value);
 
         var chunk;
         for (var cy = -10; cy < 10; cy++) {
             for (var cx = -10; cx < 10; cx++) {
                 chunk = this.worldSheet.getCellByA1(getChunkCell(cx, cy)).value;
-                if (!chunk) continue; //pular chunks vazios
+                if (!chunk) continue; //ignorar chunks vazios
+                //@ts-ignore
                 this.world.chunks.set(chunkKey(cx, cy), uncompressChunk(chunk));
             }
         }
@@ -82,26 +84,27 @@ class Database {
     async save() {
         if (!this.ready) return;
 
-        var userList = [];
-        for (var user of this.users) userList.push(user[1].save());
-        var arr = JSON.stringify(userList).match(/.{1,30000}/g);
-        arr.push(null);
-        for (var i = 0; i < arr.length; i++) {
-            this.usersSheet.getCellByA1(getCellByIndex(i)).value = arr[i];
-        }
-        await this.usersSheet.saveUpdatedCells();
-        console.log(`Saved ${userList.length} users into ${arr.length} cells`);
+        if (this.world.online > 0) {
+            var userList = [];
+            for (var user of this.users) userList.push(user[1].save());
+            var arr = JSON.stringify(userList).match(/.{1,30000}/g);
+            arr.push(null);
+            for (var i = 0; i < arr.length; i++) {
+                this.usersSheet.getCellByA1(getCellByIndex(i)).value = arr[i];
+            }
+            await this.usersSheet.saveUpdatedCells();
+            console.log(`Saved ${userList.length} users into ${arr.length} cells`);
 
-        var facList = [];
-        for (var fac of this.factions) facList.push(fac[1].save());
-        var arr = JSON.stringify(facList).match(/.{1,30000}/g);
-        arr.push(null);
-        for (var i = 0; i < arr.length; i++) {
-            this.factionsSheet.getCellByA1(getCellByIndex(i)).value = arr[i];
+            var facList = [];
+            for (var fac of this.factions) facList.push(fac[1].save());
+            var arr = JSON.stringify(facList).match(/.{1,30000}/g);
+            arr.push(null);
+            for (var i = 0; i < arr.length; i++) {
+                this.factionsSheet.getCellByA1(getCellByIndex(i)).value = arr[i];
+            }
+            await this.factionsSheet.saveUpdatedCells();
+            console.log(`Saved ${this.factions.size} factions into ${arr.length} cells`);
         }
-        await this.factionsSheet.saveUpdatedCells();
-        console.log(`Saved ${this.factions.size} factions into ${arr.length} cells`);
-
         var n = 0;
         if (this.world.dirtyChunks.size) {
             for (var chunk of this.world.dirtyChunks) {

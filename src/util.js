@@ -8,12 +8,12 @@ function chunkKey(x, y) {
     return ((y & 0x1f) << 5) + (x & 0x1f);
 }
 /**
- * @param {number} key
+ * @param {number} k
  */
 function fromChunkKey(k) {
     let x = k & 0x1f;
     let y = k >> 5;
-    //Se o ultimo bit (o da esquerda) for 1 então a coordenada é negativa
+    //Se o maior bit for 1 então a coordenada é negativa
     if (x >> 4) x = -(((~x >>> 0) & 0x1f) + 1);
     if (y >> 4) y = -(((~y >>> 0) & 0x1f) + 1);
     return [x, y];
@@ -39,10 +39,10 @@ function pymod(n, M) {
     return ((n % M) + M) % M;
 }
 /**
- * @param {string|number} snowflake 
+ * @param {string} snowflake
  */
 function snowflakeToMillis(snowflake) {
-    return parseInt(snowflake) / 4194304 + 1420070400000;
+    return +snowflake / 4194304 + 1420070400000;
 }
 
 const colors = ['#000000', '#353131', '#9e9e9e', '#ffffff', '#f51515', '#ea7c12', '#f5da15', '#7b4906', '#101065', '#2525e3', '#0af0e2', '#226813', '#43cb25', '#14a23b', '#611266', '#ce2385'];

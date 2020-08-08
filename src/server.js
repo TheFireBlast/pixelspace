@@ -17,7 +17,7 @@ const Chat = require('./Chat');
 const { fromChunkKey, hash, normalize } = require('./util');
 
 const web = express();
-const server = http.createServer(web).listen(process.env.PORT || 3002, '0.0.0.0', () => console.log('Web server active'));
+const server = http.createServer(web).listen(+process.env.PORT || 80, '0.0.0.0', () => console.log('Web server active'));
 const io = require('socket.io')(server);
 const DB = new Database();
 const lang = require('./lang.json');
@@ -110,9 +110,10 @@ web.post(['/api/user/:id/ban', '/api/user/:id/unban'], (req, res) => {
 web.get('/api/connection(/:id)?', (req, res) => {
     if (req.headers.authorization != process.env.admin) return res.status(403).send('403 Forbidden');
     if (!req.params.id) return res.status(400).send('400 Bad Request');
+    var cid = +req.params.id;
     for (var u of DB.users) {
         for (var c of u[1].connections) {
-            if (c.id == req.params.id) {
+            if (c.id == cid) {
                 return res.send(c.user.save());
             }
         }
@@ -136,8 +137,8 @@ web.get('/api/disconnect(/:id)?', (req, res) => {
     if (!req.params.id) return res.status(400).send('400 Bad Request');
     if (req.params.id[0] == '#') {
         var cid = +req.params.id.slice(1);
-        for (var u of DB.users) {
-            for (var c of u[1].connections) {
+        for (var [uid, u] of DB.users) {
+            for (var c of u.connections) {
                 if (c.id == cid) {
                     c.socket.disconnect();
                     return res.send({ success: true });
@@ -161,14 +162,13 @@ web.get('/api/status', (req, res) => {
 });
 web.post('/api/message', urlParser, (req, res) => {
     if (req.headers.authorization != process.env.admin) return res.status(403).send('403 Forbidden');
+    //@ts-ignore
     globalChat.send({ username: req.body.name, id: req.body.id }, req.body.message, JSON.parse(req.body.options));
     res.send({ success: true });
 });
 
 web.get('/online', (req, res) => {
-    res.send({
-        online: [...DB.users].reduce((a, b) => (b[1].connections.size ? 1 : 0) + a, 0)
-    });
+    res.send({ online: world ? world.online : 0 });
 });
 web.get('/changelog', (req, res) => {
     res.send(changelogPage);
@@ -180,7 +180,7 @@ web.get('/locale', (req, res) => {
 });
 web.get('/return', async (req, res) => {
     let code = req.query.code;
-    if (!code) {
+    if (!code || typeof code !== 'string') {
         console.log('Login failed (get code)', code);
         return res.sendFile(loginFailPath);
     }
@@ -194,7 +194,7 @@ web.get('/return', async (req, res) => {
         console.log('Login failed (get user)', code, token, data);
         return res.sendFile(loginFailPath);
     }
-    var ip = (req.headers['x-forwarded-for'] || req.connection.remoteAddress).split(',')[0];
+    var ip = (req.headers['x-forwarded-for'].toString() || req.connection.remoteAddress).split(',')[0];
     var user = UserManager.getByDiscordID(data.id);
     if (!user) user = UserManager.create(data, token, ip);
     else {
@@ -284,8 +284,8 @@ io.on('connection', async function (socket) {
         }
     });
     socket.on('disconnect', (reason) => {
-        if (user && user.banned) disconnectReason = `Banned (@${_user.discord.username}#${_user.discord.discriminator})`;
-        console.log(`${user ? user.id : ''}#${conn.id} has been disconnected REASON:${disconnectReason || reason}`);
+        if (user && user.banned) disconnectReason = `Banned (@${user.discord.username}#${user.discord.discriminator})`;
+        console.log(`${user ? user.id : ''}#${conn.id} has been disconnected [REASON:${disconnectReason || reason || 'unknown'}]`);
         if (user) user.remove(conn);
         conn.leave();
         connections.delete(conn);
@@ -337,8 +337,8 @@ io.on('connection', async function (socket) {
         if (x > 9 || x < -10 || y > 9 || y < -10) return; //Nao enviar chunks fora da area de jogo
         socket.emit('ch', ch, world.chunkToString(x, y));
     });
+    //TODO: Chat de fação e privado
     var lastMessage = 0;
-    //TODO: CHAT ROOMS
     socket.on('msg', (msg) => {
         // Message
         if (typeof msg !== 'string' || !user || user.banned) return;

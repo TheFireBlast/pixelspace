@@ -11,6 +11,8 @@ const { hash, normalize } = require('./util');
     id?: string;
     admin?: boolean;
     banned?: boolean;
+    banReason?: string;
+    secret?: string;
     lastTokenUpdate: number;
     discordToken: import('./Discord').DiscordToken;
     discord: import('./Discord').DiscordUser;
@@ -38,7 +40,7 @@ class User {
 
         /**@type {boolean} */
         this.banned = init.banned || false;
-        /**@type {boolean} */
+        /**@type {string} */
         this.banReason = init.banReason;
         /**@type {boolean} */
         this.admin = init.admin || false;
@@ -66,8 +68,12 @@ class User {
         this.stack = Math.min(this.stackMax, add + this.stack);
         this.lastStackRefresh = now;
     }
-    emit() {
-        this.connections.forEach((c) => c.emit.apply(c, arguments));
+    /**
+     * @param {string} event
+     * @param {any[]} args
+     */
+    emit(event, ...args) {
+        this.connections.forEach((c) => c.emit(event, ...args));
     }
     add(/**@type {Connection} */ conn) {
         this.connections.add(conn);

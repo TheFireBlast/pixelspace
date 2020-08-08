@@ -19,7 +19,7 @@ class Chat {
         for (var c of this.listeners) c.emit('msg', [user.username, user.id], message, options);
     }
     /**
-     * @param {string} sender user id
+     * @param {[string,string]} sender user, id
      * @param {string} text message content
      * @param {MessageOptions} options
      */
