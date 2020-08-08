@@ -1,0 +1,134 @@
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>PixelSpace</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+        <meta name="description" content="A pixel game">
+        <link rel="stylesheet" href="style.css" />
+        <link rel="shortcut icon" type="image/png" href="favicon.png" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+        <script src="lib/base64-binary.js"></script>
+        <script src="lib/TiledCanvas.js"></script>
+        <script src="lib/pzntg.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.0.0/p5.min.js"></script>
+        <!-- <script src="lib/hammer.min.js"></script> -->
+    </head>
+
+    <body>
+        <span id="pickers">
+            <span class="overlay" id="picker"></span>
+        </span>
+        <div class="overlay window" id="chat">
+            <div class="titlebar">
+                <span>Chat</span>
+                <select class="nodrag" id="chatroom">
+                    <option value="global" selected>Global</option>
+                </select>
+                <!-- <i class="close material-icons">close</i> -->
+            </div>
+            <div class="history"></div>
+            <input placeholder="Send a message" />
+            <i class="material-icons">send</i>
+        </div>
+        <div class="overlay window" id="profile" style="opacity: 0; display: none;">
+            <div class="titlebar">
+                <span>Profile</span>
+                <i class="close nodrag material-icons">close</i>
+            </div>
+            <div class="user-card login">
+                <a
+                    class="login"
+                    href="https://discordapp.com/api/oauth2/authorize?client_id=522937570825601037&redirect_uri=https%3A%2F%2Fpxspace.herokuapp.com%2Freturn&response_type=code&scope=identify"
+                    >Entrar com o Discord</a
+                >
+                <img class="avatar" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAABCAQAAAC896x4AAAAC0lEQVR42mNkgAMAABYAAqmTp+YAAAAASUVORK5CYII= " />
+                <span class="name">Loading...</span>
+                <span class="discordname"><span class="discriminator"></span></span>
+                <span class="userid"></span>
+            </div>
+            <div class="stats">
+                <div class="pixels">
+                    <span>Pixels Placed</span><span>-</span>
+                    <div class="colorperc"></div>
+                    <div class="colors"></div>
+                </div>
+                <div class="faction"><span>Faction</span><span class="faclink" style="cursor: pointer; color: #6b6bff;">-</span></div>
+            </div>
+        </div>
+        <div class="overlay window" id="settings" style="opacity: 0; display: none;">
+            <div class="titlebar">
+                <span>Settings</span>
+                <i class="close nodrag material-icons">close</i>
+            </div>
+            <div class="content">
+                <span class="option">
+                    <span>-</span>
+                </span>
+            </div>
+        </div>
+        <div class="overlay window" id="factions" style="opacity: 0; display: none;">
+            <div class="titlebar">
+                <span>Factions</span>
+                <i class="close nodrag material-icons">close</i>
+            </div>
+            <div class="faclist"></div>
+            <div class="faccreate">
+                <span>Create Faction</span>
+                <input type="text" class="name" />
+                <input type="button" class="submit" />
+            </div>
+        </div>
+        <div class="overlay window" id="faction" style="opacity: 0; display: none;">
+            <div class="titlebar">
+                <span>Loading</span>
+                <i class="close nodrag material-icons">close</i>
+            </div>
+            <div class="facinfo">
+                <span class="openreq">Requests</span>
+                <div class="requests" style="display: none;"></div>
+                <h3>Stats</h3>
+                <div class="stats">
+                    <div class="colorperc"></div>
+                    <div class="colors"></div>
+                </div>
+                <h3>Members</h3>
+                <div class="memberlist"></div>
+            </div>
+        </div>
+
+        <div class="overlay" id="coords">0, 0</div>
+        <div class="overlay" id="disconnected" style="display: none;">Offline</div>
+        <div class="overlay" id="online"><i class="material-icons">person</i><a>0</a></div>
+        <div class="overlay" id="cooldown" style="display: none;">0</div>
+        <div class="overlay" id="stack">10/10</div>
+        <div class="overlay" id="zoom" style="display: none;">
+            <div class="in">＋</div>
+            <div class="out">－</div>
+        </div>
+        <div class="overlay" id="menu">
+            <div name="cursors" lang="hideCursors"><i class="material-icons">border_outer</i></div>
+            <div name="grid" lang="hideGrid"><i class="material-icons">grid_on</i></div>
+            <div name="chat" lang="hideChat"><i class="material-icons">chat</i></div>
+            <div name="lupa" lang="lupa" style="opacity: 0.5;"><i class="material-icons">search</i></div>
+            <div name="settings" lang="settings"><i class="material-icons">settings</i></div>
+            <div name="factions" lang="factions"><i class="material-icons">group</i></div>
+            <div name="profile" lang="profile">
+                <i class="material-icons">person</i>
+                <div class="alert" style="display: none;"><span></span><span></span></div>
+            </div>
+            <!-- <div name="info" lang="info"><i class="material-icons">info</i></div> -->
+            <div name="menu" lang="menu"><i class="material-icons">menu</i></div>
+
+            <div id="tooltip" class="overlay"><a></a></div>
+        </div>
+        <canvas id="world"></canvas>
+
+        <div id="notif">
+            <div></div>
+        </div>
+
+        <script src="main.js"></script>
+    </body>
+</html>

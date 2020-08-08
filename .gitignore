@@ -1,0 +1,4 @@
+.env
+dev/
+node_modules/
+test/

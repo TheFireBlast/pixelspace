@@ -1,0 +1,541 @@
+* {
+    font-family: Roboto, sans-serif;
+}
+body {
+    background: #333;
+    overflow: hidden;
+}
+a {
+    text-decoration: 0;
+}
+b {
+    font-weight: bolder;
+}
+canvas {
+    top: 0;
+    left: 0;
+    position: absolute;
+}
+
+.overlay {
+    position: absolute;
+    background: rgb(0, 0, 0);
+    opacity: 0.8;
+    z-index: 3;
+    color: rgb(255, 255, 255);
+    transition: opacity 0.1s ease-in-out;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#picker div.selected {
+    -webkit-box-shadow: 0 0 0 2px #fff !important;
+    box-shadow: 0 0 0 2px #fff !important;
+}
+#picker div:hover {
+    cursor: pointer;
+    -webkit-box-shadow: 0 0 0 2px #555;
+    box-shadow: 0 0 0 2px #555;
+}
+#picker {
+    width: 548px;
+    height: 36px;
+    border-radius: 0 0 8px 8px;
+    top: 0;
+    left: calc(50vw - 274px);
+    display: grid;
+    padding: 3px 6px 3px 6px;
+    background: #000d;
+    grid-template-rows: auto;
+    grid-auto-flow: column;
+}
+#picker div {
+    height: 30px;
+    border-radius: 2px;
+    margin: 2px 2px;
+    width: 30px;
+    transition: box-shadow 0.1s ease-in-out;
+    transition: -webkit-box-shadow 0.1s ease-in-out;
+}
+
+#pickers {
+    height: 100px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 262px;
+}
+#pickers > span:hover {
+    opacity: 1 !important;
+}
+
+#tooltip {
+    padding: 3px 10px 0px 10px;
+    top: 5px;
+    left: 45px;
+    border-radius: 5px;
+    height: 18px;
+    width: auto !important;
+    white-space: nowrap;
+    transition: opacity 0.2s ease-out;
+    overflow: hidden;
+    opacity: 0;
+    margin: 0 !important;
+    user-select: none;
+    pointer-events: none;
+}
+#tooltip > a {
+    font-size: 12px;
+}
+
+#menu {
+    padding: 8px;
+    left: 0;
+    top: calc(-4 * 29px);
+    border-radius: 0 0 10px 0;
+    width: 21px;
+    cursor: pointer;
+    padding-top: 0;
+    transition: opacity 0.2s ease-in-out, top 0.2s ease-out, border-radius 0.3s ease-in-out;
+    user-select: none;
+}
+#menu div {
+    width: 30px;
+    margin-left: -8px;
+    padding-left: 8px;
+}
+#menu i {
+    margin-top: 5px;
+    margin-left: -2px;
+}
+
+#disconnected {
+    padding: 8px;
+    top: 0;
+    right: 80px;
+    padding-left: 10px;
+    border-radius: 0 0 8px 8px;
+    background: rgb(251, 30, 30);
+}
+
+#coords {
+    padding: 8px;
+    bottom: 0;
+    right: 0;
+    padding-left: 13px;
+    border-radius: 8px 0 0 0;
+    min-width: 40px;
+    text-align: right;
+    user-select: none;
+}
+
+#stack {
+    padding: 8px;
+    top: 0;
+    right: 0;
+    padding-left: 13px;
+    border-radius: 0 0 0 8px;
+    user-select: none;
+}
+
+#online {
+    padding: 8px;
+    text-align: left;
+    bottom: 0;
+    left: 0;
+    padding-right: 10px;
+    border-radius: 0 8px 0 0;
+    height: 21px;
+    user-select: none;
+}
+#online a {
+    vertical-align: super;
+}
+
+i {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#chat {
+    width: 20em;
+    height: 12em;
+    bottom: 45px;
+    left: 20px;
+    top: unset;
+    border-radius: 8px;
+    overflow: hidden;
+    padding: 0;
+    opacity: 0.8;
+}
+#chat:hover {
+    opacity: 1 !important;
+}
+#chat > .titlebar {
+    padding: 4px 10px;
+}
+#chatroom {
+    background: none;
+    float: right;
+    border: 1px solid #555;
+    border-radius: 4px;
+    color: #fff;
+}
+#chat > input {
+    width: calc(100% - 29px);
+    bottom: 0;
+    position: absolute;
+    background: none;
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    padding: 6px;
+}
+#chat > i {
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    cursor: pointer;
+}
+#chat > .history {
+    overflow-y: scroll;
+    height: calc(12em - 60px);
+    border-bottom: 1px solid #2d2d2d;
+}
+#chat > .history > div {
+    font-size: 13px;
+    padding: 0 5px;
+    line-break: anywhere;
+}
+#chat > .history > div > a {
+    margin-right: 8px;
+}
+#chat > .history > div p {
+    margin: 5px 0;
+}
+#chat > .history .content {
+    display: inline-table;
+}
+#chat > .history .content a[href] {
+    text-decoration: underline;
+    color: inherit;
+}
+#chat > .history > div:nth-child(even) {
+    background: #0f0f0f;
+}
+#chat .emote {
+    margin: -5px 0 0 0;
+    vertical-align: middle;
+}
+#chat .userlink {
+    color: #3fb7ff;
+    background: #3fb7ff1c;
+    cursor: pointer;
+    border: 2px solid #0000;
+    border-radius: 2px;
+}
+#chat .userlink:hover {
+    background: #3fb7ff3a;
+}
+
+.window {
+    box-sizing: border-box;
+    position: absolute;
+    top: 40px;
+    left: calc(50vw - 225px);
+    width: 450px;
+    height: calc(100% - 80px);
+    padding: 15px;
+    padding-top: 0;
+    border-radius: 8px;
+    background: #151515fa;
+    opacity: 1;
+    z-index: 2;
+    box-shadow: rgba(0, 0, 0, 0.75) 0px 0px 5px 1px;
+}
+.window > .titlebar {
+    padding: 8px 0;
+    user-select: none;
+}
+.window > .titlebar::after {
+    content: '';
+    border-top: 1px solid #999;
+    border-bottom: 1px solid #999;
+    width: 20px;
+    height: 5px;
+    position: absolute;
+    left: calc(50% - 10px);
+    top: 10px;
+}
+.window > .titlebar > .close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+    padding: 5px;
+}
+
+#profile > .user-card {
+    border-radius: 64px;
+    background: #00000060;
+    position: relative;
+    height: 128px;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+#profile > .user-card .avatar {
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    background: #111;
+    box-sizing: border-box;
+    border: 2px solid #000;
+}
+#profile > .user-card .name {
+    font-size: 20px;
+    display: inline-block;
+    line-height: 128px;
+    position: absolute;
+    margin: 0 0 0 15px;
+}
+#profile > .user-card .discordname {
+    font-size: 16px;
+    display: inline-block;
+    line-height: 128px;
+    position: absolute;
+    margin: 25px 0 0 15px;
+    color: #aaa;
+}
+#profile > .user-card .discriminator {
+    font-size: 12px;
+    margin-left: 3px;
+    color: #6c6c6c;
+}
+#profile > .user-card.login .avatar,
+#profile > .user-card.login .name,
+#profile > .user-card.login .discordname,
+#profile > .user-card .login {
+    display: none;
+}
+#profile > .user-card .userid {
+    position: absolute;
+    bottom: 4px;
+    font-size: 10px;
+    right: 56px;
+    color: #aaa;
+}
+#profile > .user-card.login {
+    background: #7289da;
+}
+#profile > .user-card.login .login {
+    display: block;
+    padding: 5px;
+    width: 100%;
+    height: 100%;
+    user-select: none;
+    cursor: pointer;
+    color: #fff;
+    text-align: center;
+    line-height: 118px;
+}
+#profile > .stats {
+    overflow-y: auto;
+    height: calc(100% - 170px);
+}
+#profile > .stats > div {
+    background: #00000060;
+    border-radius: 10px;
+    padding: 6px 10px;
+    margin-top: 5px;
+}
+#profile > .stats > div > span:last-of-type {
+    float: right;
+}
+.stats .colors {
+    display: grid;
+    grid-template-columns: 25% 25% 25% 25%;
+    margin-top: 8px;
+}
+.stats .colors > span {
+    margin: 1px 5px;
+    padding: 0 8px;
+    border-radius: 10px;
+}
+.stats .colorperc {
+    margin-top: 8px;
+}
+.stats .colorperc > div {
+    display: inline-block;
+    height: 8px;
+    width: 6.25%;
+    transition: width 0.5s ease-out;
+}
+
+#faction .memberlist {
+    height: calc(100vh - 375px);
+    overflow-y: auto;
+}
+#faction .openreq {
+    position: absolute;
+    right: 20px;
+    top: 36px;
+    cursor: pointer;
+}
+#faction .requests {
+    position: absolute;
+    right: 20px;
+    top: 64px;
+    background: #070707;
+    padding: 10px;
+    width: 150px;
+    border-radius: 10px;
+}
+#faction .requests div {
+    display: flow-root;
+}
+#faction .requests i {
+    float: right;
+    cursor: pointer;
+}
+#factions .faclist {
+    height: calc(100% - 40px);
+    overflow-y: auto;
+}
+#factions .faclist > div,
+#faction .memberlist > div {
+    background: #0008;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 5px;
+}
+#factions .faclist > div:hover,
+#faction .memberlist > div:hover {
+    background: #3338;
+}
+#factions .faclist > div > span,
+#faction .memberlist > div > span {
+    pointer-events: none;
+}
+#factions .faclist > div > span:last-of-type,
+#faction .memberlist > div > span:last-of-type {
+    float: right;
+    font-size: 10px;
+}
+#factions .faclist > div .join {
+    float: right;
+    padding: 3px 7px !important;
+    margin-left: 10px;
+}
+#factions .faccreate {
+    background: #0008;
+    border-radius: 10px;
+    padding: 20px;
+    position: absolute;
+    bottom: 20px;
+    width: calc(100% - 70px);
+}
+#factions .faccreate > span:first-of-type {
+    font-size: 25px;
+    display: block;
+    margin-bottom: 10px;
+    text-align: center;
+}
+#factions .faccreate > .name {
+    background: #0008;
+    border: 1px solid #fff2;
+    color: #fff;
+    padding: 4px;
+}
+input[type='button'] {
+    background: #222;
+    border: 1px solid #fff2;
+    color: #fff;
+    padding: 4px 10px;
+}
+input[type='button']:active {
+    background: #333;
+}
+
+#settings > .content {
+    overflow-y: auto;
+}
+
+#zoom {
+    height: 21px;
+    border-radius: 8px 8px 0 0;
+    bottom: 0;
+    left: calc(50vw - 52px);
+    padding: 8px 0;
+    user-select: none;
+}
+#zoom div {
+    cursor: pointer;
+    padding: 0 14px;
+    display: inline;
+}
+#zoom .out {
+    border-left: 1px solid #222;
+}
+
+#info {
+    color: white;
+}
+
+#menu .alert {
+    position: relative;
+}
+#menu .alert > span {
+    position: absolute;
+    background: #f00;
+    width: 8px;
+    height: 8px;
+    display: block;
+    bottom: 0px;
+    right: 8px;
+    border-radius: 50%;
+}
+#menu .alert > span:first-of-type {
+    animation: 1.6s ease-in-out 0s infinite normal none running alert;
+}
+@keyframes alert {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    60%,
+    100% {
+        transform: scale(3);
+        opacity: 0;
+    }
+}
+
+#notif {
+    z-index: 5;
+    display: block;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    bottom: 20px;
+}
+#notif > div {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+#notif > div > span {
+    display: table;
+    padding: 8px 18px;
+    margin: auto;
+    margin-bottom: 6px;
+    border-radius: 5px;
+    transition: 0.3s ease-out;
+    text-align: center;
+    background: #f71717;
+    color: white;
+    opacity: 1;
+    box-shadow: rgba(0, 0, 0, 0.75) 0px 0px 5px 1px;
+}

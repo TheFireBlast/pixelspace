@@ -1,0 +1,56 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>PixelSpace</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="style.css" />
+        <link rel="shortcut icon" type="image/png" href="favicon.png" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+        <script src="lib/base64-binary.js"></script>
+        <script src="lib/jquery-3.3.1.min.js"></script>
+        <script src="lib/TiledCanvas.js"></script>
+        <script src="lib/socket.io.js"></script>
+        <script src="lib/pzntg.min.js"></script>
+        <script src="lib/p5.min.js"></script>
+        <script src="lib/hammer.min.js"></script>
+    </head>
+
+    <body>
+        <span id="pickers">
+            <span class="overlay" id="picker"></span>
+        </span>
+        <div class="overlay" id="chat">
+            <div class="history"></div>
+            <input />
+            <i class="material-icons">send</i>
+        </div>
+        <div class="overlay" id="profile" style="display:none;">
+            <div class="close"><i class="material-icons">close</i></div>
+            <div class="user-card login">
+                <a class="login" target="_blank" href="https://discordapp.com/api/oauth2/authorize?client_id=522937570825601037&redirect_uri=https%3A%2F%2Fpixelspace.glitch.me%2Freturn&response_type=code&scope=identify">Entrar com o Discord</a>
+                <img class="avatar" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAABCAQAAAC896x4AAAAC0lEQVR42mNkgAMAABYAAqmTp+YAAAAASUVORK5CYII= " />
+                <h1 class="name">User<a class="discriminator">#0000</a></h1>
+            </div>
+            <div class="stats">
+                <a class="pixels">-</a><a> pixels colocados</a>
+            </div>
+        </div>
+        <div class="overlay" id="coords">0, 0</div>
+        <div class="overlay" id="disconnected" style="display:none;">Offline</div>
+        <div class="overlay" id="online"><i class="material-icons">person</i><a>0</a></div>
+        <div class="overlay" id="cooldown" style="display:none;">0</div>
+        <div class="overlay" id="stack">10/10</div>
+        <div class="overlay" id="menu">
+            <div name="cursors" lang="hideCursors"><i class="material-icons">border_outer</i></div>
+            <div name="grid" lang="hideGrid"><i class="material-icons">grid_on</i></div>
+            <div name="chat" lang="hideChat"><i class="material-icons">chat</i></div>
+            <div name="lupa" lang="lupa" style="opacity: 0.5;"><i class="material-icons">search</i></div>
+            <div name="profile" lang="profile"><i class="material-icons">person</i></div>
+            <!-- <div name="info" lang="info"><i class="material-icons">info</i></div> -->
+            <div name="menu" lang="menu"><i class="material-icons">menu</i></div>
+
+            <div id="tooltip" class="overlay" style="max-width: 0;padding: 3px 0 0 0;"><a></a></div>
+            <script src="mobile.js"></script>
+        </div>
+    </body>
+</html>
